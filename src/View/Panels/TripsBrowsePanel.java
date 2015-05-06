@@ -18,9 +18,10 @@ import java.util.Map;
     //TODO:
 //each trip has "add to basket" and "view trip" button
 public class TripsBrowsePanel extends JPanel{
-    private final Dimension maxComboBoxSize = new Dimension(200, 25);
-    private Map<JButton, Integer> uidMap = new HashMap<JButton, Integer>();
-
+    private final Dimension maxComboBoxSize = new Dimension(200, 25);               //max size of comboboxes
+    private final Dimension preferredScrollerPanelSize = new Dimension(640, 400);   //preferred size of scroller
+    private Map<JButton, Integer> uidMap = new HashMap<JButton, Integer>();         //used to access trips by button click
+    private JPanel thisPanel;
     public TripsBrowsePanel(final MainFrame mainFrame, final int startFrom, final int userID) {
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 
@@ -54,6 +55,8 @@ public class TripsBrowsePanel extends JPanel{
         uidMap.clear();
         for (int i = 0; i < 10; i++) {
             JPanel tempPanel = new JPanel();
+            tempPanel.setLayout(new BoxLayout(tempPanel, BoxLayout.LINE_AXIS));
+            tempPanel.setBorder(BorderFactory.createTitledBorder(""));
             int uid = (int) ((i+startFrom) * (Math.random() * 100));
             int cost = (i+startFrom) * 7365;
             String location = "Somewhere";
@@ -63,17 +66,17 @@ public class TripsBrowsePanel extends JPanel{
             tripInfo.setEditable(false);
             tempPanel.add(tripInfo);
             JButton viewTripButton = new JButton("View");
-            JButton addToBasketButton = new JButton("Add to basket");
+            JButton payForTrip = new JButton("Pay");
             uidMap.put(viewTripButton, uid);
             viewTripButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     //TODO: should redirect here to TripInfoPanel
-                    JOptionPane.showMessageDialog(null, "Should have redirected you to trip with ID \"" + (uidMap.get((JButton) e.getSource())) + "\"");
+                    mainFrame.goToViewTrip(uidMap.get((JButton) e.getSource()), thisPanel);
                 }
             });
             tempPanel.add(viewTripButton);
-            tempPanel.add(addToBasketButton);
+            tempPanel.add(payForTrip);
             panelList.add(tempPanel);
         }
 
@@ -87,28 +90,29 @@ public class TripsBrowsePanel extends JPanel{
         //create a scroller for list
         JScrollPane tripsListScroller = new JScrollPane(tripsListPanel);
         //TODO: vertical scroll bar's position should be at top
-        // tripsListScroller.getVerticalScrollBar().setValue(tripsListScroller.getVerticalScrollBar().getMinimum());
-        tripsListScroller.setPreferredSize(new Dimension(640, 400));
+        tripsListScroller.setPreferredSize(preferredScrollerPanelSize);
+        //tripsListScroller.getVerticalScrollBar().setValue(tripsListScroller.getVerticalScrollBar().getMinimum());
+
 
         //create control buttons
         JPanel controlPanel = new JPanel();
         controlPanel.setLayout(new BoxLayout(controlPanel, BoxLayout.LINE_AXIS));
         JButton prevTripsButton = new JButton("Previous");
         JButton nextTripsButton = new JButton("Next");
-        JButton userStartScreenButton = new JButton("User screen");
-        JButton browseBasketButton = new JButton("Browse basket");
+        JButton userStartScreenButton = new JButton("View my trips");
 
         controlPanel.add(prevTripsButton);
         controlPanel.add(nextTripsButton);
         controlPanel.add(Box.createHorizontalGlue());
         controlPanel.add(userStartScreenButton);
-        controlPanel.add(browseBasketButton);
 
         //overall view construction
         add(sortSelectionPanel);
         add(tripsListScroller);
         add(controlPanel);
+        tripsListScroller.setBorder(BorderFactory.createTitledBorder("Trips"));
 
+        thisPanel = this;
         //button listeners
         prevTripsButton.addActionListener(new ActionListener() {
             @Override
@@ -130,13 +134,7 @@ public class TripsBrowsePanel extends JPanel{
         userStartScreenButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(null, "Should have redirected you to user welcome screen with ID \"" + userID + "\"");
-            }
-        });
-        browseBasketButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(null, "Should have redirected you to basket of user with ID \"" + userID + "\"");
+                mainFrame.goToUserTripsPanel(userID);
             }
         });
     }

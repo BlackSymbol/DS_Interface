@@ -7,6 +7,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
+import java.util.Arrays;
 import java.util.UUID;
 
 /**
@@ -38,8 +39,7 @@ public class RegisterPanel extends JPanel{
 
         //info panel
         JPanel infoPanel = new JPanel();
-        JTextArea infoLabel = new JTextArea("To register enter your name, surname, e-mail and password, then click \"Register\".\n\n" +
-                "If you need to reset your password, enter your e-mail, then click \"Reset password\".");
+        JTextArea infoLabel = new JTextArea("To register enter your name, surname, e-mail and password, then click \"Register\".");
         infoLabel.setAlignmentX(CENTER_ALIGNMENT);
         infoLabel.setEditable(false);
         infoLabel.setOpaque(false);
@@ -87,7 +87,7 @@ public class RegisterPanel extends JPanel{
         passwordPanel.add(passwordField);
 
         //password confirm field panel
-        JPanel passwordConfirmPanel = new JPanel();
+        final JPanel passwordConfirmPanel = new JPanel();
         passwordConfirmLabel = new JLabel("Confirm password");
         passwordConfirmLabel.setPreferredSize(new Dimension(labelLength, passwordConfirmLabel.getPreferredSize().height));
         passwordConfirmPanel.add(passwordConfirmLabel);
@@ -101,11 +101,9 @@ public class RegisterPanel extends JPanel{
         controlPanel.setLayout(new BoxLayout(controlPanel, BoxLayout.LINE_AXIS));
         controlPanel.add(Box.createRigidArea(new Dimension(10, 0)));
         JButton backButton = new JButton("Back");
-        JButton resetPasswordButton = new JButton("Reset password");
         JButton registerButton = new JButton("Register");
         controlPanel.add(backButton);
         controlPanel.add(Box.createHorizontalGlue());
-        controlPanel.add(resetPasswordButton);
         controlPanel.add(Box.createRigidArea(new Dimension(10, 0)));
         controlPanel.add(registerButton);
         controlPanel.add(Box.createRigidArea(new Dimension(10, 0)));
@@ -134,31 +132,29 @@ public class RegisterPanel extends JPanel{
                 mainFrame.goToWelcomeScreen();
             }
         });
-        resetPasswordButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int confirmPasswordReset = JOptionPane.showOptionDialog(mainFrame, "Reset password for \"" + loginField.getText() + "\"?",
-                        "Confirm password reset", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
-                if (confirmPasswordReset==JOptionPane.YES_OPTION)
-                {
-                    //random password generation
-                    String uuid = UUID.randomUUID().toString();
-                    uuid = uuid.replaceAll("-", "");
-                    /*
-                    TODO
-                    - check if e-mail contains "@"
-                    - check e-mail existence
-                    - change the password to a random one (await confirmation from DB)
-                    - If password change confirmed - display new password
-                    - We don't like security here :)
-                    - If all successful -> return to start screen
-                    */
-                }
-            }
-        });
         registerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                String temp = nameField.getText();
+                if (temp.isEmpty())
+                {
+                    JOptionPane.showMessageDialog(mainFrame, "Name field is empty, please enter your name", "Error", JOptionPane.ERROR_MESSAGE);
+                    nameLabel.setForeground(Color.RED);
+                }
+                else
+                {
+                    nameLabel.setForeground(Color.BLACK);
+                }
+                temp = surnameField.getText();
+                if (temp.isEmpty())
+                {
+                    JOptionPane.showMessageDialog(mainFrame, "Surname field is empty, please enter your surname", "Error", JOptionPane.ERROR_MESSAGE);
+                    surnameLabel.setForeground(Color.RED);
+                }
+                else
+                {
+                    surnameLabel.setForeground(Color.BLACK);
+                }
                 String login = loginField.getText();
                 if (login.isEmpty())
                 {
@@ -177,10 +173,18 @@ public class RegisterPanel extends JPanel{
                 else {
                     passwordLabel.setForeground(Color.BLACK);
                 }
+                if (!Arrays.equals(passwordField.getPassword(), passwordConfirmField.getPassword()))
+                {
+                    JOptionPane.showMessageDialog(mainFrame, "Passwords mismatch", "Error", JOptionPane.ERROR_MESSAGE);
+                    passwordLabel.setForeground(Color.RED);
+                    passwordConfirmLabel.setForeground(Color.RED);
+                }
+                else {
+                    passwordLabel.setForeground(Color.BLACK);
+                    passwordConfirmLabel.setForeground(Color.BLACK);
+                }
                 /*
                 TODO
-                - check if some field is empty
-                - check if password matches
                 - check e-mail password existence
                 - if exists - display error
                 - if not - register (await confirmation from DB)

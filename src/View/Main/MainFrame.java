@@ -1,8 +1,6 @@
 package View.Main;
 
-import View.Panels.RegisterPanel;
-import View.Panels.TripsBrowsePanel;
-import View.Panels.WelcomePanel;
+import View.Panels.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -31,7 +29,9 @@ public class MainFrame extends JFrame{
             }
         });
         //goToWelcomeScreen();
-        goToTripsBrowsing(0, 0);
+        //goToTripsBrowsing(0, 0);
+        goToUserTripsPanel(0);
+        //goToViewTrip(0, null);
     }
     public void goToWelcomeScreen()
     {
@@ -54,6 +54,29 @@ public class MainFrame extends JFrame{
         getContentPane().removeAll();
         TripsBrowsePanel tbp = new TripsBrowsePanel(this, startFrom, userID);
         add(tbp);
+        revalidate();
+        repaint();
+    }
+    public void goToViewTrip(int tripID, JPanel panel)
+    {
+        getContentPane().removeAll();
+        TripInfoPanel tip = new TripInfoPanel(this, tripID, panel);
+        add(tip);
+        revalidate();
+        repaint();
+    }
+    public void goToPanel(JPanel panel)
+    {
+        getContentPane().removeAll();
+        add(panel);
+        revalidate();
+        repaint();
+    }
+    public void goToUserTripsPanel(int userID)
+    {
+        getContentPane().removeAll();
+        UserTripsPanel utp = new UserTripsPanel(this, userID);
+        add(utp);
         revalidate();
         repaint();
     }

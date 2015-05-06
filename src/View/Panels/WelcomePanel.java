@@ -120,9 +120,7 @@ public class WelcomePanel extends JPanel {
                 /*
                 TODO:
                 - check email-password pair
-                - if matches -> get usergroup
-                - if usergroup == "Admin" -> call admin interface
-                - if usergroup == "User" -> call standard user interface
+                - is authorised?
                  */
             }
         });
