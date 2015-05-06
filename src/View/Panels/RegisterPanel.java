@@ -7,17 +7,24 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
+import java.util.UUID;
 
 /**
  * Created by Denis on 8.4.2015.
  */
-public class RegisterScreen extends JPanel{
+public class RegisterPanel extends JPanel{
+    private JLabel nameLabel;                       //name label
+    private JLabel surnameLabel;                    //surname label
+    private JLabel loginLabel;                      //e-mail label
+    private JLabel passwordLabel;                   //password label
+    private JLabel passwordConfirmLabel;            //password confirm label
 
     private JTextField nameField;                   //name
     private JTextField surnameField;                //surname
     private JTextField loginField;                  //e-mail
     private JPasswordField passwordField;           //password
     private JPasswordField passwordConfirmField;    //used to confirm password
+
     private final int labelLength = 150;            //preferred width of labels positioned before fields
     private final int minFieldLength = 150;         //minimum width of fields
     private final int maxComponentHeight = 50;      //maximum height of labels/fields
@@ -25,7 +32,7 @@ public class RegisterScreen extends JPanel{
     /**
      * @param mainFrame parent frame (final because is used in button listeners to load certain parent methods)
      */
-    public RegisterScreen(final MainFrame mainFrame)
+    public RegisterPanel(final MainFrame mainFrame)
     {
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 
@@ -41,7 +48,7 @@ public class RegisterScreen extends JPanel{
 
         //name panel
         JPanel namePanel = new JPanel();
-        JLabel nameLabel = new JLabel("Name (first name)");
+        nameLabel = new JLabel("Name (first name)");
         nameLabel.setPreferredSize(new Dimension(labelLength, nameLabel.getPreferredSize().height));
         namePanel.add(nameLabel);
         nameField = new JTextField();
@@ -51,7 +58,7 @@ public class RegisterScreen extends JPanel{
 
         //surname panel
         JPanel surnamePanel = new JPanel();
-        JLabel surnameLabel = new JLabel("Surname (last name)");
+        surnameLabel = new JLabel("Surname (last name)");
         surnameLabel.setPreferredSize(new Dimension(labelLength, surnameLabel.getPreferredSize().height));
         surnamePanel.add(surnameLabel);
         surnameField = new JTextField();
@@ -61,7 +68,7 @@ public class RegisterScreen extends JPanel{
 
         //login panel
         JPanel loginPanel = new JPanel();
-        JLabel loginLabel = new JLabel("E-mail");
+        loginLabel = new JLabel("E-mail");
         loginLabel.setPreferredSize(new Dimension(labelLength, loginLabel.getPreferredSize().height));
         loginPanel.add(loginLabel);
         loginField = new JTextField();
@@ -71,7 +78,7 @@ public class RegisterScreen extends JPanel{
 
         //password field panel
         JPanel passwordPanel = new JPanel();
-        JLabel passwordLabel = new JLabel("Password");
+        passwordLabel = new JLabel("Password");
         passwordLabel.setPreferredSize(new Dimension(labelLength, passwordLabel.getPreferredSize().height));
         passwordPanel.add(passwordLabel);
         passwordField = new JPasswordField();
@@ -81,7 +88,7 @@ public class RegisterScreen extends JPanel{
 
         //password confirm field panel
         JPanel passwordConfirmPanel = new JPanel();
-        JLabel passwordConfirmLabel = new JLabel("Confirm password");
+        passwordConfirmLabel = new JLabel("Confirm password");
         passwordConfirmLabel.setPreferredSize(new Dimension(labelLength, passwordConfirmLabel.getPreferredSize().height));
         passwordConfirmPanel.add(passwordConfirmLabel);
         passwordConfirmField = new JPasswordField();
@@ -124,7 +131,7 @@ public class RegisterScreen extends JPanel{
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mainFrame.goToStartScreen();
+                mainFrame.goToWelcomeScreen();
             }
         });
         resetPasswordButton.addActionListener(new ActionListener() {
@@ -134,13 +141,16 @@ public class RegisterScreen extends JPanel{
                         "Confirm password reset", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
                 if (confirmPasswordReset==JOptionPane.YES_OPTION)
                 {
+                    //random password generation
+                    String uuid = UUID.randomUUID().toString();
+                    uuid = uuid.replaceAll("-", "");
                     /*
                     TODO
                     - check if e-mail contains "@"
                     - check e-mail existence
                     - change the password to a random one (await confirmation from DB)
                     - If password change confirmed - display new password
-                    - ! OR ! send new password to e-mail
+                    - We don't like security here :)
                     - If all successful -> return to start screen
                     */
                 }
@@ -149,11 +159,28 @@ public class RegisterScreen extends JPanel{
         registerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                String login = loginField.getText();
+                if (login.isEmpty())
+                {
+                    JOptionPane.showMessageDialog(mainFrame, "E-mail field is empty, please enter you email", "Error", JOptionPane.ERROR_MESSAGE);
+                    loginLabel.setForeground(Color.RED);
+                }
+                else
+                {
+                    loginLabel.setForeground(Color.BLACK);
+                }
+                if (passwordField.getPassword().length==0)
+                {
+                    JOptionPane.showMessageDialog(mainFrame, "Password field is empty, please enter you password", "Error", JOptionPane.ERROR_MESSAGE);
+                    passwordLabel.setForeground(Color.RED);
+                }
+                else {
+                    passwordLabel.setForeground(Color.BLACK);
+                }
                 /*
                 TODO
                 - check if some field is empty
                 - check if password matches
-                - check if e-mail contains "@"
                 - check e-mail password existence
                 - if exists - display error
                 - if not - register (await confirmation from DB)

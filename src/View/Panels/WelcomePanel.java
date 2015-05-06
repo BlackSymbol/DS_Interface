@@ -11,9 +11,13 @@ import java.awt.event.WindowEvent;
 /**
  * Created by Denis on 29.3.2015.
  */
-public class StartScreen extends JPanel {
-    private JTextField loginField;                  //user's e-mail
-    private JPasswordField passwordField;           //user's password
+public class WelcomePanel extends JPanel {
+    private JLabel loginLabel;                      //e-mail label
+    private JLabel passwordLabel;                   //password label
+
+    private JTextField loginField;                  //e-mail
+    private JPasswordField passwordField;           //password
+
     private final int labelLength = 75;             //preferred width of labels positioned before fields
     private final int minFieldLength = 150;         //minimum width of fields
     private final int maxComponentHeight = 50;      //maximum height of labels/fields
@@ -21,7 +25,7 @@ public class StartScreen extends JPanel {
     /**
      * @param mainFrame parent frame (final because is used in button listeners to load certain parent methods)
      */
-    public StartScreen(final MainFrame mainFrame)
+    public WelcomePanel(final MainFrame mainFrame)
     {
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 
@@ -34,7 +38,7 @@ public class StartScreen extends JPanel {
 
         //login panel
         JPanel loginPanel = new JPanel();
-        JLabel loginLabel = new JLabel("E-mail");
+        loginLabel = new JLabel("E-mail");
         loginLabel.setPreferredSize(new Dimension(labelLength, loginLabel.getPreferredSize().height));
         loginPanel.add(loginLabel);
         loginField = new JTextField();
@@ -44,7 +48,7 @@ public class StartScreen extends JPanel {
 
         //password field panel
         JPanel passwordPanel = new JPanel();
-        JLabel passwordLabel = new JLabel("Password");
+        passwordLabel = new JLabel("Password");
         passwordLabel.setPreferredSize(new Dimension(labelLength, passwordLabel.getPreferredSize().height));
         passwordPanel.add(passwordLabel);
         passwordField = new JPasswordField();
@@ -94,9 +98,27 @@ public class StartScreen extends JPanel {
         loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                String login = loginField.getText();
+                if (login.isEmpty())
+                {
+                    JOptionPane.showMessageDialog(mainFrame, "E-mail field is empty, please enter you email", "Error", JOptionPane.ERROR_MESSAGE);
+                    loginLabel.setForeground(Color.RED);
+                }
+                else
+                {
+                    loginLabel.setForeground(Color.BLACK);
+                }
+                if (passwordField.getPassword().length==0)
+                {
+                    JOptionPane.showMessageDialog(mainFrame, "Password field is empty, please enter you password", "Error", JOptionPane.ERROR_MESSAGE);
+                    passwordLabel.setForeground(Color.RED);
+                }
+                else {
+                    passwordLabel.setForeground(Color.BLACK);
+                }
+
                 /*
                 TODO:
-                - check if some field is empty
                 - check email-password pair
                 - if matches -> get usergroup
                 - if usergroup == "Admin" -> call admin interface

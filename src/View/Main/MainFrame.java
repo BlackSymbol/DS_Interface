@@ -1,7 +1,8 @@
 package View.Main;
 
-import View.Panels.RegisterScreen;
-import View.Panels.StartScreen;
+import View.Panels.RegisterPanel;
+import View.Panels.TripsBrowsePanel;
+import View.Panels.WelcomePanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -29,21 +30,30 @@ public class MainFrame extends JFrame{
                 super.windowClosing(e);
             }
         });
-        goToStartScreen();
+        //goToWelcomeScreen();
+        goToTripsBrowsing(0, 0);
     }
-    public void goToStartScreen()
+    public void goToWelcomeScreen()
     {
         getContentPane().removeAll();
-        StartScreen ss = new StartScreen(this);
-        add(ss);
+        WelcomePanel wp = new WelcomePanel(this);
+        add(wp);
         revalidate();
         repaint();
     }
     public void goToRegisterScreen()
     {
         getContentPane().removeAll();
-        RegisterScreen rs = new RegisterScreen(this);
-        add(rs);
+        RegisterPanel rp = new RegisterPanel(this);
+        add(rp);
+        revalidate();
+        repaint();
+    }
+    public void goToTripsBrowsing(int startFrom, int userID)
+    {
+        getContentPane().removeAll();
+        TripsBrowsePanel tbp = new TripsBrowsePanel(this, startFrom, userID);
+        add(tbp);
         revalidate();
         repaint();
     }
